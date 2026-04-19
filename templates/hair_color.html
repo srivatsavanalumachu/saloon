@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Virtual Hair Color Try-On - GlamourAI{% endblock %}
+
+{% block content %}
+<section class="hair-color-hero">
+    <div class="container">
+        <h1>🎨 Virtual Hair Color Try-On</h1>
+        <p>See how different hair colors look on you in real-time!</p>
+    </div>
+</section>
+
+<div class="container hair-color-container">
+    <div class="camera-section">
+        <h2>Live Camera</h2>
+        <div class="video-wrapper">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+        </div>
+        <div class="controls">
+            <button id="startCamera" class="btn-primary">📷 Start Camera</button>
+            <button id="stopCamera" class="btn-secondary">⏹️ Stop</button>
+            <button id="capturePhoto" class="btn-primary">📸 Try On Color</button>
+        </div>
+    </div>
+
+    <div class="color-palette">
+        <h2>Choose Your Color</h2>
+        <div class="color-grid" id="colorGrid">
+            <div class="color-swatch" style="background: #8B4513;" data-color="#8B4513">Brown</div>
+            <div class="color-swatch" style="background: #DAA520;" data-color="#DAA520">Golden Brown</div>
+            <div class="color-swatch" style="background: #FFD700;" data-color="#FFD700">Blonde</div>
+            <div class="color-swatch" style="background: #000000;" data-color="#000000">Black</div>
+            <div class="color-swatch" style="background: #FF4500;" data-color="#FF4500">Copper Red</div>
+            <div class="color-swatch" style="background: #800080;" data-color="#800080">Purple</div>
+            <div class="color-swatch" style="background: #FF69B4;" data-color="#FF69B4">Hot Pink</div>
+            <div class="color-swatch" style="background: #00CED1;" data-color="#00CED1">Teal</div>
+            <div class="color-swatch" style="background: #A0522D;" data-color="#A0522D">Auburn</div>
+            <div class="color-swatch" style="background: #C0C0C0;" data-color="#C0C0C0">Silver/Gray</div>
+            <div class="color-swatch" style="background: #FFFFFF; border: 2px solid #ccc;" data-color="#FFFFFF">Reset</div>
+        </div>
+        <p class="note">💡 Tip: Good lighting and a plain background give the best results.</p>
+    </div>
+</div>
+
+<style>
+.hair-color-hero {
+    background: linear-gradient(135deg, #f0e6ff, #ffe4f0);
+    padding: 2rem 0;
+    text-align: center;
+}
+.hair-color-container {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    margin: 2rem auto;
+}
+.camera-section {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.video-wrapper {
+    background: #f0f0f0;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+}
+#video, #canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.color-palette {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+}
+.color-swatch {
+    padding: 1rem;
+    text-align: center;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 0 2px black;
+    transition: transform 0.2s;
+}
+.color-swatch:hover {
+    transform: scale(1.05);
+}
+.color-swatch[style*="#FFFFFF"] {
+    color: #333;
+    text-shadow: none;
+}
+.controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+.note {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 1rem;
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .hair-color-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script src="{{ url_for('static', filename='js/hair_color.js') }}"></script>
+{% endblock %}

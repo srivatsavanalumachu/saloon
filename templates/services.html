@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Our Services - GlamourAI Salon{% endblock %}
+
+{% block content %}
+<section class="services-hero">
+    <div class="container">
+        <h1>✨ Our Premium Services ✨</h1>
+        <p>Expert care tailored to you – from quick touch‑ups to complete bridal transformations</p>
+    </div>
+</section>
+
+<div class="container services-grid-container">
+    <div class="services-grid">
+        {% for key, service in services.items() %}
+        <div class="service-card">
+            <div class="service-icon">
+                {% if key == 'haircut' %}✂️
+                {% elif key == 'hair_color' %}🎨
+                {% elif key == 'bridal_wedding' %}👰
+                {% elif key == 'keratin' %}💇‍♀️
+                {% elif key == 'facial' %}🧖‍♀️
+                {% else %}💆
+                {% endif %}
+            </div>
+            <h3>{{ service.name }}</h3>
+            <p class="service-description">{{ service.description }}</p>
+            <div class="service-price">Starts at <strong>₹{{ service.base_price }}</strong></div>
+            <div class="group-note">👥 Group discounts available – call us!</div>
+            <a href="/#lead-form" class="btn-enquire">Enquire Now →</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.services-hero {
+    background: linear-gradient(135deg, #fff5f8 0%, #ffe8f0 100%);
+    padding: 3rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.services-hero h1 {
+    font-size: 2.5rem;
+    color: #1e1e2a;
+}
+.services-hero p {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 600px;
+    margin: 0.5rem auto 0;
+}
+.services-grid-container {
+    margin: 2rem auto 4rem;
+}
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+.service-card {
+    background: white;
+    border-radius: 24px;
+    padding: 1.8rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    text-align: center;
+    border: 1px solid #f0e6ea;
+}
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(255,105,157,0.1);
+    border-color: #ffb7c5;
+}
+.service-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+.service-card h3 {
+    font-size: 1.6rem;
+    margin: 0.5rem 0;
+    color: #1e1e2a;
+}
+.service-description {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0.75rem 0;
+}
+.service-price {
+    font-size: 1.3rem;
+    margin: 1rem 0 0.5rem;
+}
+.service-price strong {
+    color: #ff6b9d;
+    font-size: 1.6rem;
+}
+.group-note {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 1.2rem;
+}
+.btn-enquire {
+    display: inline-block;
+    background: #ff6b9d;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+.btn-enquire:hover {
+    background: #e85a8a;
+    transform: scale(1.02);
+}
+@media (max-width: 700px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    .service-card {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %}

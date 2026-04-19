@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Grow the Glow – 4/7 Day Challenge{% endblock %}
+
+{% block content %}
+<section class="challenge-hero">
+    <div class="container">
+        <h1>✨ Grow the Glow Challenge ✨</h1>
+        <p>Commit to 4 or 7 days of healthy habits, share your journey on Instagram, and earn an exclusive discount!</p>
+    </div>
+</section>
+
+<div class="container challenge-grid">
+    <!-- Left: Checklist Card -->
+    <div class="challenge-card checklist-card">
+        <h2>📋 The Challenge Checklist</h2>
+        <ul class="checklist">
+            <li>🚶‍♀️ 45 min walk (outdoors or treadmill)</li>
+            <li>💧 Drink 4 litres of water</li>
+            <li>🥗 Eat at least 2 servings of fruits/vegetables</li>
+            <li>😴 7+ hours of sleep</li>
+        </ul>
+        <div class="terms">
+            <h3>📜 Terms & Conditions</h3>
+            <ul>
+                <li>Challenge must be completed on consecutive days.</li>
+                <li>Instagram account must be public for verification.</li>
+                <li>Only one discount code per person.</li>
+                <li>Discount code valid for 30 days on any service above ₹999.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right: Submission Form Card -->
+    <div class="challenge-card form-card">
+        <h2>🏆 Submit Your Completion</h2>
+        <form id="challengeForm" class="challenge-form">
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="phone">
+            </div>
+            <div class="form-group">
+                <label>Challenge Duration</label>
+                <select id="challenge_days">
+                    <option value="4">4-Day Challenge</option>
+                    <option value="7">7-Day Challenge</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Instagram Post URL *</label>
+                <input type="url" id="instagram_url" placeholder="https://www.instagram.com/p/..." required>
+            </div>
+            <button type="submit" class="btn-primary">Submit Challenge</button>
+            <div id="challengeMessage"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('challengeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', document.getElementById('name').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('phone', document.getElementById('phone').value);
+    formData.append('challenge_days', document.getElementById('challenge_days').value);
+    formData.append('instagram_url', document.getElementById('instagram_url').value);
+    const msg = document.getElementById('challengeMessage');
+    msg.innerHTML = 'Submitting...';
+    try {
+        const res = await fetch('/submit-challenge', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+            msg.innerHTML = '<p style="color:green;">✅ ' + data.message + '</p>';
+            document.getElementById('challengeForm').reset();
+        } else {
+            msg.innerHTML = '<p style="color:red;">❌ ' + data.message + '</p>';
+        }
+    } catch (err) {
+        msg.innerHTML = '<p style="color:red;">❌ Network error. Please try again.</p>';
+    }
+});
+</script>
+
+<style>
+.challenge-hero {
+    background: linear-gradient(135deg, #f0e6ff, #ffe4f0);
+    padding: 2rem 0;
+    text-align: center;
+}
+.challenge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem auto;
+}
+.challenge-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.checklist {
+    list-style: none;
+    padding-left: 0;
+    margin: 1.5rem 0;
+}
+.checklist li {
+    padding: 0.5rem 0;
+    font-size: 1.1rem;
+}
+.checklist li::before {
+    content: "✅ ";
+    margin-right: 0.5rem;
+}
+.terms {
+    background: #f9f9f9;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 1.5rem;
+}
+.terms h3 {
+    margin-top: 0;
+}
+.challenge-form .form-group {
+    margin-bottom: 1rem;
+}
+.challenge-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+.challenge-form input,
+.challenge-form select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 1rem;
+}
+@media (max-width: 768px) {
+    .challenge-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+</style>
+{% endblock %}

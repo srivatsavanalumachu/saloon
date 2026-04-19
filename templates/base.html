@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GlamourAI Salon{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">✨ GlamourAI Salon</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/hairstyle-scan">Hairstyle Scan</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/grow-the-glow">Grow the Glow</a></li>
+                <li><a href="/comments">💬 Community</a></li>
+                {% if session.user_email %}
+                    <li><a href="/logout">Logout ({{ session.user_name }})</a></li>
+                {% else %}
+                    <li><a href="/login">Login</a></li>
+                {% endif %}
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">☰</div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div>
+                <h3>GlamourAI Salon</h3>
+                <p>AI-powered beauty & hair recommendations</p>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/hairstyle-scan">Hairstyle Scan</a></li>
+                    <li><a href="/services">Services</a></li>
+                    <li><a href="/grow-the-glow">Grow the Glow</a></li>
+                    <li><a href="/comments">Community</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <p>📞 +91 98765 43210</p>
+                <p>✉️ hello@glamourai.com</p>
+            </div>
+            <div>
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#">📷</a>
+                    <a href="#">📘</a>
+                    <a href="#">🐦</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 GlamourAI Salon. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

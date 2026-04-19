@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - GlamourAI{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="hero-text">
+            <h1>Welcome back, <span class="highlight">{{ user.user_name }}</span>!</h1>
+            <p>Your AI stylist is ready. Discover your perfect hairstyle, join the glow challenge, or chat with our community.</p>
+            <div class="hero-buttons">
+                <a href="/hairstyle-scan" class="btn-primary">✨ Try Hairstyle Scan</a>
+                <a href="/comments" class="btn-outline">💬 Join Conversation</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='images/hero-model.jpg') }}" alt="Stylish hair model">
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">What would you like to do today?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Hairstyle Scan</h3>
+                <p>Detect your face shape and get AI recommendations.</p>
+                <a href="/hairstyle-scan" class="btn-outline">Try Now</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>Grow the Glow</h3>
+                <p>Join the wellness challenge and earn discounts.</p>
+                <a href="/grow-the-glow" class="btn-outline">Join Challenge</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Community Hub</h3>
+                <p>Share your thoughts, like posts, and chat live.</p>
+                <a href="/comments" class="btn-outline">Visit Hub</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

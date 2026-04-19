@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Community Hub - GlamourAI{% endblock %}
+
+{% block content %}
+<section class="comments-hero">
+    <div class="container">
+        <h1>💬 Community Hub</h1>
+        <p>Share your thoughts, like posts, and chat with fellow members.</p>
+    </div>
+</section>
+
+<div class="container hub-container">
+    <!-- Shoutbox -->
+    <div class="shoutbox-section">
+        <h2>💬 Live Conversation</h2>
+        <div class="shoutbox-messages" id="shoutboxMessages">
+            {% for msg in messages[:20] %}
+            <div class="shout-message"><strong>{{ msg.user_name }}</strong> <small>{{ msg.created_at }}</small><br>{{ msg.message }}</div>
+            {% else %}<p>No messages yet. Start the conversation!</p>{% endfor %}
+        </div>
+        <form id="shoutForm" class="shout-form">
+            <input type="text" id="shoutMessage" placeholder="Type your message..." required>
+            <button type="submit" class="btn-primary">Send</button>
+        </form>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <h2>📝 Comments & Posts</h2>
+        <form id="commentForm" class="comment-form">
+            <textarea id="commentText" rows="3" placeholder="Write a comment..."></textarea>
+            <button type="submit" class="btn-primary">Post Comment</button>
+        </form>
+        <div id="commentsList" class="comments-list">
+            {% for comment in comments %}
+            <div class="comment-card" data-id="{{ comment.id }}">
+                <div class="comment-header"><strong>{{ comment.user_name }}</strong> <small>{{ comment.created_at }}</small></div>
+                <p>{{ comment.comment }}</p>
+                <div class="comment-actions">
+                    <button class="like-btn" data-id="{{ comment.id }}">❤️ Like (<span class="like-count">{{ comment.likes }}</span>)</button>
+                    <button class="share-btn" data-text="{{ comment.comment }}">🔗 Share</button>
+                </div>
+            </div>
+            {% else %}<p>No comments yet. Be the first!</p>{% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('commentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const comment = document.getElementById('commentText').value.trim();
+    if (!comment) return;
+    const res = await fetch('/api/post-comment', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({comment}) });
+    if ((await res.json()).success) location.reload();
+    else alert('Error posting comment');
+});
+document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const commentId = btn.getAttribute('data-id');
+        const res = await fetch('/api/like-comment', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({comment_id: commentId}) });
+        const data = await res.json();
+        if (data.success) btn.querySelector('.like-count').innerText = data.new_likes;
+    });
+});
+document.querySelectorAll('.share-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(`Check out this comment: "${btn.getAttribute('data-text')}" - from GlamourAI community`);
+        alert('Comment link copied to clipboard!');
+    });
+});
+document.getElementById('shoutForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = document.getElementById('shoutMessage').value.trim();
+    if (!message) return;
+    const res = await fetch('/api/post-shout', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({message}) });
+    if ((await res.json()).success) location.reload();
+    else alert('Error sending message');
+});
+</script>
+
+<style>
+.comments-hero { background: linear-gradient(135deg, #f0e6ff, #ffe4f0); padding: 2rem 0; text-align: center; }
+.hub-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; margin: 2rem auto; }
+.shoutbox-section, .comments-section { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+.shoutbox-messages { height: 300px; overflow-y: auto; background: #f9f9f9; border-radius: 12px; padding: 0.5rem; margin-bottom: 1rem; }
+.shout-message { border-bottom: 1px solid #eee; padding: 0.5rem; }
+.comment-form textarea, .shout-form input { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 0.5rem; }
+.comment-card { border-bottom: 1px solid #f0f0f0; padding: 1rem 0; }
+.comment-actions button { background: none; border: none; cursor: pointer; margin-right: 1rem; color: #ff6b9d; }
+@media (max-width: 768px) { .hub-container { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}

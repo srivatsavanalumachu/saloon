@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}AI Hairstyle Scanner{% endblock %}
+
+{% block content %}
+<section class="scan-hero">
+    <div class="container">
+        <h1>🔍 AI Hairstyle Scanner</h1>
+        <p>Point your camera at your face – we'll detect your face shape and recommend the perfect hairstyle.</p>
+    </div>
+</section>
+
+<div class="container scan-container">
+    <div class="scan-camera">
+        <h2>Live Camera</h2>
+        <div class="video-wrapper">
+            <img id="video-feed" src="{{ url_for('video_feed') }}" alt="Camera Feed">
+        </div>
+        <div class="scan-buttons">
+            <button id="capture-btn" class="btn-primary">📸 Capture & Analyze</button>
+            <button id="upload-btn" class="btn-secondary">📁 Upload Photo Instead</button>
+        </div>
+        <input type="file" id="file-input" accept="image/*" style="display: none;">
+    </div>
+    <div class="scan-result">
+        <h2>Your Result</h2>
+        <div id="result-container">
+            <div class="result-placeholder">
+                <p>Your face shape & hairstyle will appear here ✨</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const captureBtn = document.getElementById('capture-btn');
+    const uploadBtn = document.getElementById('upload-btn');
+    const fileInput = document.getElementById('file-input');
+    const resultContainer = document.getElementById('result-container');
+    const videoFeed = document.getElementById('video-feed');
+
+    captureBtn.addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            canvas.getContext('2d').drawImage(img, 0, 0);
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('image', blob, 'capture.jpg');
+                showLoading();
+                fetch('/detect_shape', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.error) showError(data.error);
+                        else showResult(data);
+                    })
+                    .catch(() => showError('Error analyzing image'));
+            }, 'image/jpeg');
+        };
+        img.src = videoFeed.src;
+    });
+
+    uploadBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', e => {
+        if (e.target.files[0]) {
+            const formData = new FormData();
+            formData.append('image', e.target.files[0]);
+            showLoading();
+            fetch('/detect_shape', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) showError(data.error);
+                    else showResult(data);
+                })
+                .catch(() => showError('Error analyzing image'));
+        }
+    });
+
+    function showLoading() {
+        resultContainer.innerHTML = `<div class="loading-spinner">🔄 Analyzing your face...</div>`;
+    }
+    function showError(msg) {
+        resultContainer.innerHTML = `<div class="error-card">❌ ${msg}<br>Please try again with a clear face.</div>`;
+    }
+    function showResult(data) {
+        const rec = data.recommendation;
+        resultContainer.innerHTML = `
+            <div class="result-card">
+                <h3>Your Face Shape: <span class="shape-name">${data.face_shape.toUpperCase()}</span></h3>
+                <div class="confidence">Confidence: ${(data.confidence * 100).toFixed(1)}%</div>
+                <h3>💇 Recommended Hairstyle</h3>
+                <div class="hairstyle-name">${rec.name}</div>
+                <p>${rec.description}</p>
+                <div class="hairstyle-img">
+                    <img src="{{ url_for('static', filename='hairstyles/${rec.image}') }}" alt="${rec.name}">
+                </div>
+                <a href="#" class="btn-outline">Book this hairstyle →</a>
+            </div>
+        `;
+    }
+</script>
+{% endblock %}
